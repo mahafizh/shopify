@@ -91,3 +91,13 @@ export const refreshToken = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getMe = async (req, res, next) => {
+  const user = req.user;
+  console.log(user);
+  try {
+    return AppSuccess(res, 200, user);
+  } catch (error) {
+    next(error);
+  }
+};
