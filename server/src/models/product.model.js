@@ -27,6 +27,11 @@ const productSchema = new mongoose.Schema(
         ref: "Category",
       },
     ],
+    stock: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
     isFeatured: {
       type: Boolean,
       default: false,

@@ -1,25 +1,49 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
+import { AppError } from "../utils/responseHandler.js";
+import { redis } from "../lib/redis.js";
 
 export const authUser = async (req, res, next) => {
   try {
     const accessToken = req.cookies.access_token;
-    if (accessToken) {
-      const decode = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-      const user = await User.findById(decode.userId).select(
+    const refreshToken = req.cookies.refresh_token;
+    if (accessToken && refreshToken) {
+      const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+      const user = await User.findById(decoded.userId).select(
+        "_id name email role",
+      );
+      req.user = user;
+      next();
+    } else if (refreshToken && !accessToken) {
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+      );
+      const storedToken = await redis.get(`refresh_token:${decoded.userId}`);
+      if (storedToken !== refreshToken) {
+        throw new AppError("Invalid refresh token", 401);
+      }
+      const accessToken = jwt.sign(
+        { userId: decoded.userId },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "15m" },
+      );
+      res.cookie("access_token", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 15 * 60 * 1000,
+      });
+      const user = await User.findById(decoded.userId).select(
         "_id name email role",
       );
       req.user = user;
       next();
     } else {
-      return res.status(401).json({
-        message: "Unauthorized",
-      });
+      throw new AppError("Unauthorized", 401);
     }
   } catch (error) {
-    return res.status(500).json({
-      message: "Request failed",
-    });
+    next(error);
   }
 };
 
@@ -27,16 +51,11 @@ export const isAdmin = async (req, res, next) => {
   const { role } = req.user;
   try {
     if (role !== "admin") {
-      return res.status(403).json({
-        message: "Forbidden",
-      });
+      throw new AppError("Forbidden: Admins only", 403);
     } else {
       next();
     }
   } catch (error) {
-    return res.status(500).json({
-      message: "Request failed",
-      error: error.message
-    });
+    next(error);
   }
 };
