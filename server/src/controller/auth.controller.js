@@ -15,7 +15,6 @@ import {
 
 export const getMe = async (req, res, next) => {
   const user = req.user;
-  console.log(user);
   try {
     return AppSuccess(res, 200, user);
   } catch (error) {
