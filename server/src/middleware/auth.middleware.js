@@ -10,7 +10,7 @@ export const authUser = async (req, res, next) => {
     if (accessToken && refreshToken) {
       const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
       const user = await User.findById(decoded.userId).select(
-        "_id name email role",
+        "_id name email role cartItems imageURL",
       );
       req.user = user;
       next();
@@ -35,7 +35,7 @@ export const authUser = async (req, res, next) => {
         maxAge: 15 * 60 * 1000,
       });
       const user = await User.findById(decoded.userId).select(
-        "_id name email role",
+        "_id name email role cartItems imageURL",
       );
       req.user = user;
       next();

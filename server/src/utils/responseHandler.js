@@ -5,10 +5,10 @@ export class AppError extends Error {
   }
 }
 
-export const AppSuccess = (res, status, data = null) => {
+export const AppSuccess = (res, status, data = null, message = null) => {
   return res.status(status).json({
     success: true,
-    message: "Request success",
-    ...(data !== null && {data})
-  })
-}
+    message: message || "Request success",
+    ...(data !== null && { data }),
+  });
+};
