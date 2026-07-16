@@ -47,7 +47,7 @@ export const sendWelcomeEmail = async (email, name) => {
 
 export const sendPasswordResetEmail = async (email, name, resetToken) => {
   const recipient = [{ email }];
-  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+  const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
   try {
     const response = await mailtrapClient.send({
       from: sender,
