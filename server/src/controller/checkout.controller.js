@@ -5,8 +5,6 @@ import { Product } from "../models/product.model.js";
 import { Order } from "../models/order.model.js";
 import { createStripeCoupon } from "../utils/createStripeCoupon.js";
 import { AppError, AppSuccess } from "../utils/responseHandler.js";
-import dotenv from "dotenv";
-dotenv.config();
 
 export const createCheckout = async (req, res, next) => {
   const { products, couponCode } = req.body;

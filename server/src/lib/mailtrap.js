@@ -1,10 +1,8 @@
 import { MailtrapClient } from "mailtrap";
-import dotenv from "dotenv";
 import { welcomeTemplate } from "../template/welcome.template.js";
 import { verificationTemplate } from "../template/verification.template.js";
 import { AppError } from "../utils/responseHandler.js";
 import { forgotPasswordTemplate } from "../template/forgotPassword.template.js";
-dotenv.config();
 
 const mailtrapClient = new MailtrapClient({
   token: process.env.MAILTRAP_API_TOKEN,

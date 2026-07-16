@@ -1,13 +1,11 @@
+import "dotenv/config";
 import express from "express";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
 import path from "path";
 import fileUpload from "express-fileupload";
 import routes from "./routes/route.js";
 import { connectDB } from "./lib/database.js";
 import { errorHandler } from "./middleware/errorHandler.middleware.js";
-
-dotenv.config();
 const __dirname = path.resolve();
 const PORT = process.env.PORT;
 const app = express();

@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema(
     },
     imageURL: {
       type: String,
+      default: () => process.env.DEFAULT_USER_IMAGE,
     },
     cartItems: [
       {

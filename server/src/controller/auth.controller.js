@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { redis } from "../lib/redis.js";
 import crypto from "crypto";
@@ -12,15 +11,6 @@ import {
   sendVerificationEmail,
   sendWelcomeEmail,
 } from "../lib/mailtrap.js";
-
-export const getMe = async (req, res, next) => {
-  const user = req.user;
-  try {
-    return AppSuccess(res, 200, user);
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const signUp = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -38,7 +28,7 @@ export const signUp = async (req, res, next) => {
       email,
       password,
       verificationToken,
-      verificationTokenExpires: Date.now() + 15 * 60 * 1000,
+      verificationTokenExpires: new Date(Date.now() + 15 * 60 * 1000),
     });
 
     await sendVerificationEmail(user.email, user.name, verificationToken);
@@ -168,6 +158,39 @@ export const resetPassword = async (req, res, next) => {
     user.password = password;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
+    await user.save();
+    return AppSuccess(res, 200);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const requestVerifyEmail = async (req, res, next) => {
+  const currentUser = req.user;
+  try {
+    const user = await User.findById(currentUser._id).select(
+      "isVerified verificationToken verificationTokenExpires",
+    );
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+
+    if (user.isVerified === true)
+      throw new AppError("Your email has been verified");
+
+    const verificationToken = Math.floor(
+      100000 + Math.random() * 900000,
+    ).toString();
+
+    user.verificationToken = verificationToken;
+    user.verificationTokenExpires = new Date(Date.now() + 15 * 60 * 1000);
+
+    await sendVerificationEmail(
+      currentUser.email,
+      currentUser.name,
+      verificationToken,
+    );
+
     await user.save();
     return AppSuccess(res, 200);
   } catch (error) {
