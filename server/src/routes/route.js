@@ -6,8 +6,8 @@ import categoryRoutes from "./category.route.js";
 import cartRoutes from "./cart.route.js";
 import couponRoutes from "./coupon.route.js";
 import checkoutRoutes from "./checkout.route.js";
-import orderRoutes from "./order.route.js"
-import analyticRoutes from  "./analytic.route.js"
+import orderRoutes from "./order.route.js";
+import analyticRoutes from "./analytic.route.js";
 
 const router = Router();
 

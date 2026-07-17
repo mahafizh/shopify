@@ -16,18 +16,18 @@ style="background:#ffffff;border-radius:12px;margin:40px 0;">
 <p>Hello <b>${name}</b>,</p>
 
 <p>
-Thank you for registration on Shopify!
+Verify Your Email!
 </p>
 <div style="text-align: center; margin: 30px 0;">
       <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #4CAF50;">${verificationToken}</span>
 </div>
 <p>
 <span>
-To activate your account, please verify this email by enter this verification code on the 
+Please verify your email by enter this verification code on the 
 </span><a style="color:#0000FF">verification page</a>
 </p>
 <p>
-This code will expire in 15 minutes, if you didn't create an account with this email, please ignore this email.
+This code will expire in 15 minutes. If you didn't create an account with this email or didn't sending an email verification request, please ignore this email.
 </p>
 <div style="text-align:center;margin-top:35px;">
 
